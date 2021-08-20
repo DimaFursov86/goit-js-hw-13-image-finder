@@ -14,9 +14,7 @@ export default class CardsApiService {
         this.incrementPage();
         return hits;
             })
-            .catch(error => {
-                return
-            });
+            .catch(error => Promise.reject(error));
 
     }
     incrementPage() {

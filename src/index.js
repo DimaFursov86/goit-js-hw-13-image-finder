@@ -1,7 +1,9 @@
 
+import './sass/main.scss';
+
 import onecardTpl from './templates/onecard.hbs';
 import allcardsTpl from './templates/allcards.hbs';
-import './sass/main.scss';
+
 import CardsApiService from './js/apiService';
 
 
@@ -25,6 +27,10 @@ refs.loadMoreBtn.addEventListener('click', onLoadMore)
 const cardsApiService = new CardsApiService();
 
 function onLoadMore(e) {
+  refs.loadMoreBtn.scrollIntoView({
+  behavior: 'smooth',
+  block: 'end',
+});
 cardsApiService.fetchCards().then(allCards => {appendCardsMarkup(allCards)})
 }
 
@@ -32,11 +38,11 @@ function handleInput(e) {
     
     cardsApiService.query = e.target.value.trim();
     cardsApiService.resetPage();
-    clearCardsContainer();
+    // clearCardsContainer();
     console.log( cardsApiService.query)
 
    cardsApiService.fetchCards() 
-        .then(allCards => {appendCardsMarkup(allCards)})
+        .then(allCards => {clearCardsContainer(); appendCardsMarkup(allCards)})
     // console.log( this.query)
                 // if  (Cards !== undefined && Cards.status !== 404) {
                 //     const cardsHtml = Cards.map((card) => `<li class="cardList">${card.webformatURL}</li>`)
@@ -58,8 +64,8 @@ function handleInput(e) {
                 
 }
 
-function appendCardsMarkup(hits) {
-  refs.cardsContainer.insertAdjacentHTML('beforeend', allcardsTpl(hits));
+function appendCardsMarkup(allCards) {
+  refs.cardsContainer.insertAdjacentHTML('beforeend', allcardsTpl(allCards));
 }
 
 function clearCardsContainer() {

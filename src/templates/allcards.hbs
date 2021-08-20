@@ -1,12 +1,7 @@
 {{#each this}}
-<li>
-    <a href="{{url}}" target="_blank" rel="noopener noreferrer">
-        <article>
-            <img src="{{urlToImage}}" alt="" width="480">
-            <h2>{{title}}</h2>
-            <p>Posted by: {{author}}</p>
-            <p>{{description}}</p>
-        </article>
+<li class="noMarker">
+    <a class="link" href="{{url}}" target="_blank" rel="noopener noreferrer">   
+            <img src="{{webformatURL}}" alt="">
     </a>
 </li>
 {{/each}}
