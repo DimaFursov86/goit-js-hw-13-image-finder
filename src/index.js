@@ -3,7 +3,7 @@ import './sass/main.scss';
 
 import onecardTpl from './templates/onecard.hbs';
 import allcardsTpl from './templates/allcards.hbs';
-
+import LoadMoreBtn from './js/load-more-btn';
 import CardsApiService from './js/apiService';
 
 
@@ -12,38 +12,44 @@ import CardsApiService from './js/apiService';
 const refs = {
     input: document.querySelector('.js-input'),
     cardsContainer: document.querySelector('.gallery'),
-    loadMoreBtn: document.querySelector('[data-action="load-more"]')
+    // loadMoreBtn: document.querySelector('[data-action="load-more"]')
 }
+
+const loadMoreBtn = new LoadMoreBtn({
+  selector: '[data-action="load-more"]',
+  hidden: true,
+});
 
 const debounce = require('lodash.debounce');
 refs.input.addEventListener('input', debounce(handleInput, 1000));
-refs.loadMoreBtn.addEventListener('click', onLoadMore)
-// const element = document.getElementById('.my-element-selector');
-// element.scrollIntoView({
-//   behavior: 'smooth',
-//   block: 'end',
-// });
+// refs.loadMoreBtn.addEventListener('click', onLoadMore)
+loadMoreBtn.refs.button.addEventListener('click', onLoadMore);
 
 const cardsApiService = new CardsApiService();
 
 function onLoadMore(e) {
-  refs.loadMoreBtn.scrollIntoView({
+  loadMoreBtn.refs.button.scrollIntoView({
   behavior: 'smooth',
   block: 'end',
-});
-cardsApiService.fetchCards().then(allCards => {appendCardsMarkup(allCards)})
+  });
+  fetchCards();
+  // loadMoreBtn.disable(); 
+  // cardsApiService.fetchCards().then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable();})
 }
 
 function handleInput(e) {
-    
-    cardsApiService.query = e.target.value.trim();
+    e.preventDefault();
+  cardsApiService.query = e.target.value.trim();
+  loadMoreBtn.show();
     cardsApiService.resetPage();
-    // clearCardsContainer();
-    console.log( cardsApiService.query)
-
-   cardsApiService.fetchCards() 
-        .then(allCards => {clearCardsContainer(); appendCardsMarkup(allCards)})
-    // console.log( this.query)
+    clearCardsContainer();
+    fetchCards();
+console.log(e)
+  //  cardsApiService.fetchCards() 
+  //       .then(allCards => {appendCardsMarkup(allCards)})
+    
+  
+  // console.log( this.query)
                 // if  (Cards !== undefined && Cards.status !== 404) {
                 //     const cardsHtml = Cards.map((card) => `<li class="cardList">${card.webformatURL}</li>`)
                 // console.log(cardsHtml)
@@ -59,15 +65,54 @@ function handleInput(e) {
                     //     refs.countriesList.innerHTML = countriesHtml;
                     
                     // };
-            //     }
-            
-                
+            //     }              
 }
 
+function fetchCards() {
+  loadMoreBtn.disable();
+        cardsApiService.fetchCards() 
+    .then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable(); console.dir(allCards)})
+  
+}
 function appendCardsMarkup(allCards) {
   refs.cardsContainer.insertAdjacentHTML('beforeend', allcardsTpl(allCards));
 }
 
 function clearCardsContainer() {
   refs.cardsContainer.innerHTML = '';
+}
+
+const modalCloseButton = document.querySelector("[data-action=close-lightbox]")
+const lightBox = document.querySelector(".js-lightbox");
+const fotoImg = document.querySelector(".lightbox__image");
+
+
+refs.cardsContainer.addEventListener("click", onOpenFotoClik);
+modalCloseButton.addEventListener("click", onCloseFotoClik);
+// window.addEventListener("keydown", escapePress)
+
+
+function onOpenFotoClik(e) {
+  // if (!e.target.classList.contains("gallery__image")) {
+  //   return;
+  // }
+  console.dir(e)
+  e.preventDefault();
+  lightBox.classList.add("is-open");
+  fotoImg.src = e.target.dataset.source;
+  fotoImg.alt = e.target.alt;
+  window.addEventListener("keydown", escapePress)
+};
+
+function onCloseFotoClik() {
+  lightBox.classList.remove("is-open");
+  fotoImg.src = "";
+  fotoImg.alt = "";
+  window.addEventListener("keydown", escapePress)
+}
+
+function escapePress(e) {
+  if (e.code === "Escape") {
+onCloseFotoClik()
+  }
 }
