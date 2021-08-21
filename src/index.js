@@ -6,6 +6,9 @@ import allcardsTpl from './templates/allcards.hbs';
 import LoadMoreBtn from './js/load-more-btn';
 import CardsApiService from './js/apiService';
 
+import { error, alert} from '@pnotify/core';
+import '@pnotify/core/dist/PNotify.css';
+import '@pnotify/core/dist/BrightTheme.css';
 
 
 
@@ -41,41 +44,26 @@ function handleInput(e) {
     cardsApiService.resetPage();
     clearCardsContainer();
     fetchCards();
-console.log(e)
-  //  cardsApiService.fetchCards() 
-  //       .then(allCards => {appendCardsMarkup(allCards)})
-    
-  
-  // console.log( this.query)
-                // if  (Cards !== undefined && Cards.status !== 404) {
-                //     const cardsHtml = Cards.map((card) => `<li class="cardList">${card.webformatURL}</li>`)
-                // console.log(cardsHtml)
-                    // if (countriesHtml.length > 10) {
-                    //     error({ delay: 1300, width: '310px', text: 'Too many matches found. Please enter more specific query!' });
-                    //     refs.countriesList.innerHTML = ``;                 
-                    // }             
-                    // else if (countriesHtml.length === 1) {
-                    //     const markup = countryCardTpl(countries[0])
-                    //     refs.countriesList.innerHTML = `<li class="noMarker">${markup}</li>`;
-                    // }
-                    // else if (countriesHtml.length > 1 && countriesHtml.length < 11) {
-                    //     refs.countriesList.innerHTML = countriesHtml;
-                    
-                    // };
-            //     }              
+    onBadValue()
 }
 
 function fetchCards() {
   loadMoreBtn.disable();
         cardsApiService.fetchCards() 
-    .then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable(); onBadValue(allCards)})
+    .then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable(); })
   
 }
-function onBadValue(allCards) {
-  
-  if (allCards.length === 0) {
+function onBadValue() {
+ 
+  cardsApiService.fetchCards() 
+    .then(allCards => {
+      if (allCards.length === 0) {
     loadMoreBtn.hide();
+    error({ delay: 3000, width: '310px', text: 'Please, enter some valid value!' });
   }
+      else { alert({ delay: 3000, width: '310px', text: 'We found some photos!' }); }
+    })
+  
 }
 
 function appendCardsMarkup(allCards) {
