@@ -29,11 +29,19 @@ loadMoreBtn.refs.button.addEventListener('click', onLoadMore);
 const cardsApiService = new CardsApiService();
 
 function onLoadMore(e) {
-  loadMoreBtn.refs.button.scrollIntoView({
-  behavior: 'smooth',
-  block: 'end',
-  });
-  fetchCards();
+  console.log(loadMoreBtn.refs.button)
+  
+  loadMoreBtn.disable();
+        cardsApiService.fetchCards() 
+          .then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable(); scroll(); })
+ 
+}
+
+function scroll() {
+ loadMoreBtn.refs.button.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+    }); 
 }
 
 function handleInput(e) {
@@ -43,13 +51,14 @@ function handleInput(e) {
     cardsApiService.resetPage();
     clearCardsContainer();
     fetchCards();
-    onBadValue()
+  onBadValue()
+ 
 }
 
 function fetchCards() {
   loadMoreBtn.disable();
         cardsApiService.fetchCards() 
-    .then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable(); })
+          .then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable(); })
   
 }
 function onBadValue() {
