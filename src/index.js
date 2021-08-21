@@ -1,7 +1,7 @@
 
 import './sass/main.scss';
 
-import onecardTpl from './templates/onecard.hbs';
+
 import allcardsTpl from './templates/allcards.hbs';
 import LoadMoreBtn from './js/load-more-btn';
 import CardsApiService from './js/apiService';
@@ -12,7 +12,7 @@ import CardsApiService from './js/apiService';
 const refs = {
     input: document.querySelector('.js-input'),
     cardsContainer: document.querySelector('.gallery'),
-    // loadMoreBtn: document.querySelector('[data-action="load-more"]')
+    
 }
 
 const loadMoreBtn = new LoadMoreBtn({
@@ -22,7 +22,6 @@ const loadMoreBtn = new LoadMoreBtn({
 
 const debounce = require('lodash.debounce');
 refs.input.addEventListener('input', debounce(handleInput, 1000));
-// refs.loadMoreBtn.addEventListener('click', onLoadMore)
 loadMoreBtn.refs.button.addEventListener('click', onLoadMore);
 
 const cardsApiService = new CardsApiService();
@@ -33,8 +32,6 @@ function onLoadMore(e) {
   block: 'end',
   });
   fetchCards();
-  // loadMoreBtn.disable(); 
-  // cardsApiService.fetchCards().then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable();})
 }
 
 function handleInput(e) {
@@ -71,9 +68,16 @@ console.log(e)
 function fetchCards() {
   loadMoreBtn.disable();
         cardsApiService.fetchCards() 
-    .then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable(); console.dir(allCards)})
+    .then(allCards => { appendCardsMarkup(allCards); loadMoreBtn.enable(); onBadValue(allCards)})
   
 }
+function onBadValue(allCards) {
+  
+  if (allCards.length === 0) {
+    loadMoreBtn.hide();
+  }
+}
+
 function appendCardsMarkup(allCards) {
   refs.cardsContainer.insertAdjacentHTML('beforeend', allcardsTpl(allCards));
 }
@@ -86,17 +90,14 @@ const modalCloseButton = document.querySelector("[data-action=close-lightbox]")
 const lightBox = document.querySelector(".js-lightbox");
 const fotoImg = document.querySelector(".lightbox__image");
 
-
 refs.cardsContainer.addEventListener("click", onOpenFotoClik);
 modalCloseButton.addEventListener("click", onCloseFotoClik);
-// window.addEventListener("keydown", escapePress)
-
 
 function onOpenFotoClik(e) {
-  // if (!e.target.classList.contains("gallery__image")) {
-  //   return;
-  // }
-  console.dir(e)
+  if (!e.target.classList.contains("card-image")) {
+    return;
+  }
+  console.dir(e.target)
   e.preventDefault();
   lightBox.classList.add("is-open");
   fotoImg.src = e.target.dataset.source;
