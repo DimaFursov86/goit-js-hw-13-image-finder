@@ -5,9 +5,9 @@ import allcardsTpl from './templates/allcards.hbs';
 import LoadMoreBtn from './js/load-more-btn';
 import CardsApiService from './js/apiService';
 
-import { error, alert} from '@pnotify/core';
-import '@pnotify/core/dist/PNotify.css';
-import '@pnotify/core/dist/BrightTheme.css';
+// import { error, alert} from '@pnotify/core';
+// import '@pnotify/core/dist/PNotify.css';
+// import '@pnotify/core/dist/BrightTheme.css';
 
 
 
@@ -51,7 +51,7 @@ function handleInput(e) {
     cardsApiService.resetPage();
     clearCardsContainer();
     fetchCards();
-  onBadValue()
+    onBadValue();
  
 }
 
@@ -63,17 +63,18 @@ function fetchCards() {
 }
 function onBadValue() {
  
-  cardsApiService.fetchCards() 
+  cardsApiService.fetchCards()
     .then(allCards => {
       if (allCards.length === 0) {
-    loadMoreBtn.hide();
-    error({ delay: 3000, width: '310px', text: 'Please, enter some valid value!' });
-  }
-      else { alert({ delay: 3000, width: '310px', text: 'We found some photos!' }); }
-    })
+        loadMoreBtn.hide();
+        //   error({ delay: 3000, width: '310px', text: 'Please, enter some valid value!' });
+        // }
+        //     else { alert({ delay: 3000, width: '310px', text: 'We found some photos!' }); }
+        // })
   
+      }
+    })
 }
-
 function appendCardsMarkup(allCards) {
   refs.cardsContainer.insertAdjacentHTML('beforeend', allcardsTpl(allCards));
 }
