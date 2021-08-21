@@ -1,7 +1,6 @@
 
 import './sass/main.scss';
 
-
 import allcardsTpl from './templates/allcards.hbs';
 import LoadMoreBtn from './js/load-more-btn';
 import CardsApiService from './js/apiService';
